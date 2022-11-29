@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.topicreview.viewmodels.ReviewViewModel" />
+        <variable
+            name="allFragment"
+            type="com.example.topicreview.fragments.AllFragment" />
+    </data>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:allTopics="@{viewModel.allTopic}"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/no_topics_message"
+            android:textAppearance="?attr/textAppearanceHeadline5"
+            app:listPlaceholder="@{viewModel.allTopic}" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/addButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_between_elements"
+            android:layout_gravity="end|bottom"
+            android:contentDescription="@string/add_content"
+            android:onClick="@{() -> allFragment.openAddScreen()}"
+            app:srcCompat="@drawable/ic_add" />
+
+    </FrameLayout>
+
+</layout>

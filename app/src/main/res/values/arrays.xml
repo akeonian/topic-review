@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Options for Selecting next Review date -->
+    <string-array name="review_options">
+        <item>After 1 Day</item>
+        <item>After 1 Week</item>
+        <item>After 1 Month</item>
+        <item>Custom</item>
+    </string-array>
+    <!-- Options for performing action on a topic entity -->
+    <string-array name="all_options">
+        <item>Edit</item>
+        <item>Delete</item>
+    </string-array>
+
+    <!-- Item types that user can choose from when creating item -->
+    <string-array name="item_types">
+        <item>Topic</item>
+        <item>Category</item>
+    </string-array>
+
+</resources>

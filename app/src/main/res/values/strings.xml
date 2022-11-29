@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">TopicReview</string>
+    <string name="text_expand_category">Expand Category</string>
+    <string name="refresh_due">Refresh Due</string>
+    <string name="review_dialog_title">Select next Review duration, LastDuration: %d days</string>
+    <string name="options">Options</string>
+    <string name="edit">Edit</string>
+    <string name="title">Title</string>
+    <string name="add">Add</string>
+    <string name="invalid_input_message">Invalid Input</string>
+    <string name="add_content">Add Topic For Review</string>
+    <string name="review_update_hint">No. of Days</string>
+    <string name="custom_dialog_title">Custom Duration</string>
+    <string name="ok">OK</string>
+    <string name="due_title">Due Topics</string>
+    <string name="all_title">All Topics</string>
+    <string name="no_dues_message">No Topics due today</string>
+    <string name="no_topics_message">Click on + to add a Topic</string>
+    <string name="save">Save</string>
+    <string name="sort">Sort</string>
+    <string name="a_to_z">A to Z</string>
+    <string name="z_to_a">Z to A</string>
+    <string name="expand_category">Expand Category</string>
+    <string name="importData">Import</string>
+    <string name="due">Due</string>
+    <string name="exportData">Export</string>
+    <string name="file_picker_not_found">No file picker found</string>
+    <string name="save_text">Save</string>
+    <plurals name="due_days">
+        <item quantity="one">1 day</item>
+        <item quantity="other">%d days</item>
+    </plurals>
+</resources>

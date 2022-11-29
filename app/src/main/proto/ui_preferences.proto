@@ -1,0 +1,13 @@
+syntax = "proto3";
+// package tutorial;
+
+// import "google/protobuf/timestamp.proto";
+
+enum Sorting {
+    A_TO_Z = 0;
+    Z_TO_A = 1;
+}
+
+message HomePreferences {
+    Sorting sorting = 1;
+}

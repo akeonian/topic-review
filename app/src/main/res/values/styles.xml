@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Widget.TopicTheme.Card" parent="Widget.MaterialComponents.CardView">
+        <item name="android:layout_margin">8dp</item>
+        <item name="cardElevation">@dimen/elevation</item>
+        <item name="cardCornerRadius">@dimen/corner_radius</item>
+    </style>
+</resources>
