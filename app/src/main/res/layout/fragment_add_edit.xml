@@ -28,6 +28,17 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="@dimen/margin_between_elements"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/titleField"
+            app:layout_constraintBottom_toTopOf="@id/saveButton" />
+
         <Button
             android:id="@+id/cancelButton"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"

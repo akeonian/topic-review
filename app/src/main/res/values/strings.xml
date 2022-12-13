@@ -26,6 +26,7 @@
     <string name="exportData">Export</string>
     <string name="file_picker_not_found">No file picker found</string>
     <string name="save_text">Save</string>
+    <string name="none">None</string>
     <plurals name="due_days">
         <item quantity="one">1 day</item>
         <item quantity="other">%d days</item>

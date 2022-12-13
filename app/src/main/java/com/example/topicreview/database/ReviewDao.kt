@@ -42,6 +42,12 @@ abstract class ReviewDao {
     @Query("SELECT * FROM category WHERE id = :id")
     abstract fun getCategory(id: Int): Flow<Category>
 
+    @Query("SELECT * FROM category WHERE id <> :id")
+    abstract fun getCategoriesExcept(id: Int): Flow<List<Category>>
+
+    @Query("DELETE FROM category WHERE id = :id")
+    abstract suspend fun deleteCategory(id: Int)
+
     fun getDueTopics(currentDate: Long, sorting: Sorting): Flow<List<Topic>> {
         return when(sorting) {
             Sorting.A_TO_Z -> getDueTopicsAsc(currentDate)

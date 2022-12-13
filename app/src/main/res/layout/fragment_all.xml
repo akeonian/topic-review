@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:allTopics="@{viewModel.allTopic}"/>
+            app:allReviewItems="@{viewModel.allItems}"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -26,7 +26,7 @@
             android:layout_gravity="center"
             android:text="@string/no_topics_message"
             android:textAppearance="?attr/textAppearanceHeadline5"
-            app:listPlaceholder="@{viewModel.allTopic}" />
+            app:listPlaceholder="@{viewModel.allItems}" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/addButton"

@@ -3,6 +3,7 @@ package com.example.topicreview.database
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.topicreview.models.ReviewTopic
 import java.util.*
 
 @Entity
@@ -16,3 +17,14 @@ data class Topic(
     @ColumnInfo(name = "last_duration") val lastDuration: Int = 0,
     @ColumnInfo(name = "category_id") val categoryId: Int = -1
 )
+
+fun Topic.asReviewTopic(): ReviewTopic {
+    return ReviewTopic(
+        id = id,
+        title = title,
+        dateCreated = dateCreated,
+        dueDate = dueDate,
+        lastReviewDate = lastReviewDate,
+        lastDuration = lastDuration
+    )
+}

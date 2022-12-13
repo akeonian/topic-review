@@ -5,98 +5,51 @@ import android.content.ContentResolver
 import android.net.Uri
 import androidx.lifecycle.*
 import com.example.topicreview.data.UIPreferencesDataStore
-import com.example.topicreview.database.Category
-import com.example.topicreview.database.ReviewDao
-import com.example.topicreview.database.Sorting
-import com.example.topicreview.database.Topic
+import com.example.topicreview.database.*
+import com.example.topicreview.models.ReviewCategory
+import com.example.topicreview.models.ReviewItem
+import com.example.topicreview.models.ReviewTopic
+import com.example.topicreview.repository.ReviewRepository
 import com.example.topicreview.utils.DatabaseUtils
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import java.io.IOException
 import java.util.*
 
 class ReviewViewModel(
     private val reviewDao: ReviewDao,
+    private val reviewRepository: ReviewRepository,
     private val uiPreferencesDataStore: UIPreferencesDataStore
 ): ViewModel() {
 
     private val _sorting = uiPreferencesDataStore.sorting
     val sorting: LiveData<UiPreferences.Sorting> = _sorting.asLiveData()
 
-    val latestDueTopics: LiveData<List<Topic>> get() {
+    val latestReviewItems: LiveData<List<ReviewItem>> get() {
         val s = when(sorting.value) {
             UiPreferences.Sorting.Z_TO_A -> Sorting.Z_TO_A
             else -> Sorting.A_TO_Z
         }
         val time = Calendar.getInstance().timeInMillis
-        return reviewDao.getDueTopics(time, s).asLiveData()
-    }
-    val allTopic: LiveData<List<Topic>> = reviewDao.getTopics().asLiveData()
 
-    fun isValidTopicInput(title: String): Boolean {
-        return title.isNotBlank()
+        return reviewRepository.getDueItems(time, s).asLiveData()
     }
+    val allItems: LiveData<List<ReviewItem>> = reviewRepository.getAllItems().asLiveData()
 
-    fun isValidCategoryInput(title: String): Boolean {
-        return title.isNotBlank()
-    }
-
-    fun insertTopic(title: String) {
-        val today = Calendar.getInstance()
-        val newTopic = Topic(
-            title = title,
-            dateCreated = today,
-            dueDate = today,
-            lastReviewDate = today
-        )
+    fun delete(topic: ReviewTopic) {
         viewModelScope.launch {
-            reviewDao.insertTopic(newTopic)
+            reviewRepository.deleteTopic(topic)
         }
     }
 
-    fun delete(topic: Topic) {
+    fun delete(category: ReviewCategory) {
         viewModelScope.launch {
-            reviewDao.deleteTopic(topic)
+            reviewRepository.deleteCategory(category)
         }
     }
 
-    fun getTopic(id: Int): LiveData<Topic> {
-        return reviewDao.getTopic(id).asLiveData()
-    }
-
-    fun editTopic(topic: Topic, title: String) {
+    fun updateTopicReviewDate(topic: ReviewTopic, noOfDays: Int) {
         viewModelScope.launch {
-            val editedTopic = topic.copy(
-                title = title,
-                dateCreated = topic.dateCreated,
-                dueDate = topic.dueDate
-            )
-            reviewDao.updateTopic(editedTopic)
-        }
-    }
-
-    fun updateTopicReviewDate(topic: Topic, noOfDays: Int) {
-        viewModelScope.launch {
-            val reviewTopics = getNextDueDate(topic, noOfDays)
-            reviewDao.updateTopic(reviewTopics)
-        }
-    }
-
-    fun insertCategory(title: String) {
-        viewModelScope.launch {
-            val category = Category(title = title)
-            reviewDao.insertCategory(category)
-        }
-    }
-
-    fun getCategory(categoryId: Int): LiveData<Category> {
-        return reviewDao.getCategory(categoryId).distinctUntilChanged().asLiveData()
-    }
-
-    fun editCategory(category: Category, title: String) {
-        viewModelScope.launch {
-            val editedCategory = category.copy(title = title)
-            reviewDao.updateCategory(editedCategory)
+            reviewRepository.updateTopicReviewDate(topic, noOfDays)
         }
     }
 
@@ -132,24 +85,15 @@ class ReviewViewModel(
         }
     }
 
-    private fun getNextDueDate(topic: Topic, noOfDays: Int): Topic {
-        val reviewDay = Calendar.getInstance()
-        reviewDay.add(Calendar.DATE, noOfDays)
-        reviewDay.set(Calendar.HOUR_OF_DAY, 0)
-        reviewDay.set(Calendar.MINUTE, 0)
-        reviewDay.set(Calendar.SECOND, 0)
-        reviewDay.set(Calendar.MILLISECOND, 0)
-        return topic.copy(dueDate = reviewDay)
-    }
-
     class Factory(
         private val reviewDao: ReviewDao,
+        private val reviewRepository: ReviewRepository,
         private val dataStore: UIPreferencesDataStore
     ): ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(ReviewViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")
-                return ReviewViewModel(reviewDao, dataStore) as T
+                return ReviewViewModel(reviewDao, reviewRepository, dataStore) as T
             }
             throw IllegalArgumentException("Unknown ViewModel class")
         }

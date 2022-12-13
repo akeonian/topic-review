@@ -4,7 +4,7 @@
     <data>
         <variable
             name="topic"
-            type="com.example.topicreview.database.Topic" />
+            type="com.example.topicreview.models.ReviewTopic" />
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

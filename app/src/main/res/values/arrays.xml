@@ -19,5 +19,9 @@
         <item>Topic</item>
         <item>Category</item>
     </string-array>
+    <string-array name="all_category_options">
+        <item>Edit</item>
+        <item>Delete</item>
+    </string-array>
 
 </resources>

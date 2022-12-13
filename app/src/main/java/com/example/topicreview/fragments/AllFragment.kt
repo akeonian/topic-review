@@ -14,20 +14,23 @@ import com.example.topicreview.EXPORT_FILE_NAME
 import com.example.topicreview.MIME_TYPE_CSV
 import com.example.topicreview.R
 import com.example.topicreview.TopicReviewApplication
-import com.example.topicreview.adapters.AllTopicAdapter
+import com.example.topicreview.adapters.AllReviewItemsAdapter
 import com.example.topicreview.data.UIPreferencesDataStore
 import com.example.topicreview.data.homeDataStore
-import com.example.topicreview.database.Category
-import com.example.topicreview.database.Topic
 import com.example.topicreview.databinding.FragmentAllBinding
+import com.example.topicreview.models.ReviewCategory
+import com.example.topicreview.models.ReviewTopic
+import com.example.topicreview.repository.ReviewRepository
 import com.example.topicreview.viewmodels.ReviewViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class AllFragment: Fragment(), MenuProvider {
 
     private val viewModel: ReviewViewModel by activityViewModels {
+        val reviewDao = (activity?.application as TopicReviewApplication).database.reviewDao()
         ReviewViewModel.Factory(
-            (activity?.application as TopicReviewApplication).database.reviewDao(),
+            reviewDao,
+            ReviewRepository(reviewDao),
             UIPreferencesDataStore(requireContext().homeDataStore)
         )
     }
@@ -52,9 +55,10 @@ class AllFragment: Fragment(), MenuProvider {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        val adapter = AllTopicAdapter {
-            showTopicOptions(it)
-        }
+        val adapter = AllReviewItemsAdapter (
+            { showTopicOptions(it) },
+            { showCategoryOptions(it) }
+        )
         binding.recyclerView.adapter = adapter
         return binding.root
     }
@@ -86,7 +90,7 @@ class AllFragment: Fragment(), MenuProvider {
         findNavController().navigate(action)
     }
 
-    private fun showTopicOptions(topic: Topic) {
+    private fun showTopicOptions(topic: ReviewTopic) {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.options)
             .setItems(R.array.all_options) {_,index->
@@ -95,7 +99,7 @@ class AllFragment: Fragment(), MenuProvider {
             .show()
     }
 
-    private fun handleOptions(topic: Topic, index: Int) {
+    private fun handleOptions(topic: ReviewTopic, index: Int) {
         if (index == 1) {
             viewModel.delete(topic)
         } else {
@@ -103,13 +107,30 @@ class AllFragment: Fragment(), MenuProvider {
         }
     }
 
-    private fun showEditDialog(topic: Topic) {
+    private fun showEditDialog(topic: ReviewTopic) {
         val action = MainFragmentDirections.openAddEditFragment(
             itemId = topic.id, itemType = ItemType.TOPIC)
         findNavController().navigate(action)
     }
 
-    private fun showEditDialog(category: Category) {
+    private fun showCategoryOptions(category: ReviewCategory) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.options)
+            .setItems(R.array.all_category_options) {_,index->
+                handleOptions(category, index)
+            }
+            .show()
+    }
+
+    private fun handleOptions(category: ReviewCategory, index: Int) {
+        if (index == 1) {
+            viewModel.delete(category)
+        } else {
+            showEditDialog(category)
+        }
+    }
+
+    private fun showEditDialog(category: ReviewCategory) {
         val action = MainFragmentDirections.openAddEditFragment(
             itemId = category.id, itemType = ItemType.CATEGORY)
         findNavController().navigate(action)

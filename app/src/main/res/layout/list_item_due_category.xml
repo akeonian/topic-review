@@ -12,7 +12,8 @@
             android:layout_margin="@dimen/margin_between_elements"
             android:textAppearance="?attr/textAppearanceBody1"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/recyclerView" />
 
         <ImageView
             android:id="@+id/expand"
@@ -21,12 +22,14 @@
             android:layout_margin="@dimen/margin_between_elements"
             android:contentDescription="@string/expand_category"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@id/title"
+            app:layout_constraintBottom_toBottomOf="@id/title" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintHeight_max="300dp"
             app:layout_constraintStart_toStartOf="parent"

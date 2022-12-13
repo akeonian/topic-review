@@ -8,20 +8,23 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.example.topicreview.R
 import com.example.topicreview.TopicReviewApplication
-import com.example.topicreview.adapters.DueTopicsAdapter
+import com.example.topicreview.adapters.DueItemsAdapter
 import com.example.topicreview.data.UIPreferencesDataStore
 import com.example.topicreview.data.homeDataStore
-import com.example.topicreview.database.Topic
 import com.example.topicreview.databinding.DialogCustomReviewBinding
 import com.example.topicreview.databinding.FragmentDueListBinding
+import com.example.topicreview.models.ReviewTopic
+import com.example.topicreview.repository.ReviewRepository
 import com.example.topicreview.viewmodels.ReviewViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class DueListFragment: Fragment(), MenuProvider {
 
     private val viewModel: ReviewViewModel by activityViewModels {
+        val reviewDao = (activity?.application as TopicReviewApplication).database.reviewDao()
         ReviewViewModel.Factory(
-            (activity?.application as TopicReviewApplication).database.reviewDao(),
+            reviewDao,
+            ReviewRepository(reviewDao),
             UIPreferencesDataStore(requireContext().homeDataStore)
         )
     }
@@ -29,7 +32,7 @@ class DueListFragment: Fragment(), MenuProvider {
     private lateinit var _binding: FragmentDueListBinding
     private val binding get() = _binding
 
-    private lateinit var _adapter: DueTopicsAdapter
+    private lateinit var _adapter: DueItemsAdapter
     private val adapter get() = _adapter
 
     override fun onCreateView(
@@ -46,7 +49,7 @@ class DueListFragment: Fragment(), MenuProvider {
         super.onViewCreated(view, savedInstanceState)
         // TODO("Implement Categories and sort")
 
-        _adapter = DueTopicsAdapter {
+        _adapter = DueItemsAdapter {
             showReviewDialog(it)
         }
 
@@ -54,23 +57,23 @@ class DueListFragment: Fragment(), MenuProvider {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.recyclerView.adapter = adapter
         binding.swipeRefreshLayout.setOnRefreshListener {
-            refreshDueTopics()
+            refreshDueItems()
         }
-        viewModel.allTopic.observe(viewLifecycleOwner) {
-            refreshDueTopics()
+        viewModel.allItems.observe(viewLifecycleOwner) {
+            refreshDueItems()
         }
         viewModel.sorting.observe(viewLifecycleOwner) {
             activity?.invalidateOptionsMenu()
-            refreshDueTopics()
+            refreshDueItems()
         }
-        refreshDueTopics()
+        refreshDueItems()
 
         // Setup Menu for refresh
         activity?.addMenuProvider(this, viewLifecycleOwner)
     }
 
-    private fun refreshDueTopics() {
-        viewModel.latestDueTopics.observe(viewLifecycleOwner) {
+    private fun refreshDueItems() {
+        viewModel.latestReviewItems.observe(viewLifecycleOwner) {
             adapter.submitList(it)
             binding.placeholder.visibility =
                 if (it.isNullOrEmpty()) View.VISIBLE else View.GONE
@@ -78,7 +81,7 @@ class DueListFragment: Fragment(), MenuProvider {
         }
     }
 
-    private fun showReviewDialog(topic: Topic) {
+    private fun showReviewDialog(topic: ReviewTopic) {
         val days = topic.lastDuration
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.review_dialog_title, days))
@@ -88,7 +91,7 @@ class DueListFragment: Fragment(), MenuProvider {
             .show()
     }
 
-    private fun updateReviewDate(topic: Topic, index: Int) {
+    private fun updateReviewDate(topic: ReviewTopic, index: Int) {
         if (index == 3) {
             showCustomSelectDialog(topic)
         } else {
@@ -101,7 +104,7 @@ class DueListFragment: Fragment(), MenuProvider {
         }
     }
 
-    private fun showCustomSelectDialog(topic: Topic) {
+    private fun showCustomSelectDialog(topic: ReviewTopic) {
         val binding = DialogCustomReviewBinding.inflate(
             LayoutInflater.from(requireContext()))
         binding.topic = topic
@@ -130,7 +133,7 @@ class DueListFragment: Fragment(), MenuProvider {
         return when (menuItem.itemId) {
             R.id.refreshDueTopics -> {
                 binding.swipeRefreshLayout.isRefreshing = true
-                refreshDueTopics()
+                refreshDueItems()
                 true
             }
             R.id.a_to_z -> {

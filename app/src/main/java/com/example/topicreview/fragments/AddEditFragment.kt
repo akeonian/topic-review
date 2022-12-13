@@ -9,27 +9,25 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.topicreview.R
 import com.example.topicreview.TopicReviewApplication
-import com.example.topicreview.data.UIPreferencesDataStore
-import com.example.topicreview.data.homeDataStore
+import com.example.topicreview.adapters.SelectCategoryAdapter
 import com.example.topicreview.database.Category
 import com.example.topicreview.database.Topic
 import com.example.topicreview.databinding.FragmentAddEditBinding
-import com.example.topicreview.viewmodels.ReviewViewModel
+import com.example.topicreview.viewmodels.AddEditViewModel
 
 class AddEditFragment: Fragment() {
 
     private val navArgs: AddEditFragmentArgs by navArgs()
 
-    private val viewModel: ReviewViewModel by activityViewModels {
-        ReviewViewModel.Factory(
-            (activity?.application as TopicReviewApplication).database.reviewDao(),
-            UIPreferencesDataStore(requireContext().homeDataStore)
-        )
+    private val viewModel: AddEditViewModel by viewModels {
+        AddEditViewModel.Factory(
+            (activity?.application as TopicReviewApplication)
+                .database.reviewDao())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,6 +73,7 @@ class AddEditFragment: Fragment() {
         binding.saveButton.setOnClickListener {
             saveTopic(binding)
         }
+        bindAllCategories(binding)
     }
 
     private fun bindViewsToAddCategory(binding: FragmentAddEditBinding) {
@@ -83,6 +82,7 @@ class AddEditFragment: Fragment() {
         binding.saveButton.setOnClickListener {
             saveCategory(binding)
         }
+        bindAllCategories(binding)
     }
 
     private fun bindViewsToEditTopic(binding: FragmentAddEditBinding, topicId: Int) {
@@ -114,6 +114,7 @@ class AddEditFragment: Fragment() {
         binding.saveButton.setOnClickListener {
             saveTopic(binding, topic)
         }
+        bindAllCategories(binding, topic.categoryId)
     }
 
     private fun bindViewForEdit(binding: FragmentAddEditBinding, category: Category) {
@@ -123,15 +124,37 @@ class AddEditFragment: Fragment() {
         binding.saveButton.setOnClickListener {
             saveCategory(binding, category)
         }
+        bindAllCategoriesExcept(
+            binding = binding,
+            categoryId = category.id,
+            parentId = category.parentId
+        )
+    }
+
+    private fun bindAllCategories(binding: FragmentAddEditBinding, parentId: Int = -1) {
+        val adapter = SelectCategoryAdapter(parentId)
+        binding.recyclerView.adapter = adapter
+        viewModel.getCategories().observe(viewLifecycleOwner) {
+            adapter.submitList(it)
+        }
+    }
+
+    private fun bindAllCategoriesExcept(binding: FragmentAddEditBinding, categoryId: Int, parentId: Int = -1) {
+        val adapter = SelectCategoryAdapter(parentId)
+        binding.recyclerView.adapter = adapter
+        viewModel.getCategoriesExcept(categoryId).observe(viewLifecycleOwner) {
+            adapter.submitList(it)
+        }
     }
 
     private fun saveCategory(binding: FragmentAddEditBinding, category: Category? = null) {
         val title = binding.title.text.toString()
         if (viewModel.isValidCategoryInput(title)) {
+            val selectedId = getSelectedCategoryId(binding)
             if (category == null) {
-                viewModel.insertCategory(title)
+                viewModel.insertCategory(title, selectedId)
             } else {
-                viewModel.editCategory(category, title)
+                viewModel.editCategory(category, title, selectedId)
             }
             findNavController().navigateUp()
         } else {
@@ -143,10 +166,11 @@ class AddEditFragment: Fragment() {
         val title = binding.title.text.toString()
         if (viewModel.isValidTopicInput(title)) {
             Log.d("TAG", "saveTopic=$topic")
+            val selectedId = getSelectedCategoryId(binding)
             if (topic == null) {
-                viewModel.insertTopic(title)
+                viewModel.insertTopic(title, selectedId)
             } else {
-                viewModel.editTopic(topic, title)
+                viewModel.editTopic(topic, title, selectedId)
             }
             findNavController().navigateUp()
         } else {
@@ -160,6 +184,10 @@ class AddEditFragment: Fragment() {
             R.string.invalid_input_message,
             Toast.LENGTH_SHORT
         ).show()
+    }
+
+    private fun getSelectedCategoryId(binding: FragmentAddEditBinding): Int {
+        return (binding.recyclerView.adapter as SelectCategoryAdapter).getSelectedItemId()
     }
 
     /*
