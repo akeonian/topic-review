@@ -25,6 +25,7 @@ fun getDaysBetweenMillis(after: Long, before: Long): Int {
         startYear++
         startCalendar.set(Calendar.YEAR, startYear)
     }
+    println("starDay=$startDay, endDay=$endDay")
     return if (after > before)
         endDay - startDay
     else

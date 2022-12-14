@@ -9,7 +9,6 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 private const val TAG = "DatabaseUtils"
 
@@ -49,7 +48,7 @@ object DatabaseUtils {
                 return Topic(
                     title = values[title].toTitle(lineNumber),
                     dateCreated = values[dateCreated].toCalendar(lineNumber),
-                    dueDate = values[dateCreated].toCalendar(lineNumber),
+                    dueDate = values[dueDate].toCalendar(lineNumber),
                     lastReviewDate = values[lastReviewDate].toCalendar(lineNumber),
                     lastDuration = values[lastReviewDuration].toDays(lineNumber)
                 )
@@ -75,7 +74,7 @@ object DatabaseUtils {
 
         fun String.toDays(lineNumber: Int): Int {
             try {
-                return TimeUnit.MICROSECONDS.toDays(toLong()).toInt()
+                return toInt()
             } catch (e: NumberFormatException) {
                 throw IllegalFileFormatException("Could not convert $this to number of days", lineNumber)
             }
@@ -144,7 +143,7 @@ object DatabaseUtils {
         }
     }
 
-    private class IllegalFileFormatException(message: String, private val lineNumber: Int): Exception(message) {
+    internal class IllegalFileFormatException(message: String, private val lineNumber: Int): Exception(message) {
         override val message: String
             get() = "${super.message}, at line number=$lineNumber"
     }
