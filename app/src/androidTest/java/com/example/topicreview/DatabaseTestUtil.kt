@@ -9,57 +9,67 @@ object DatabaseTestUtil {
         Topic(
             id = 1,
             title = "title1",
-            dateCreated = Calendar.getInstance().apply { timeInMillis = 12341 },
-            dueDate = Calendar.getInstance().apply { timeInMillis = 12342 },
-            lastReviewDate = Calendar.getInstance().apply { timeInMillis = 12343 },
+            dateCreated = getCal(12341),
+            dueDate = getCal(12342),
+            lastReviewDate = getCal(12343),
             lastDuration = 14,
             categoryId = -1
         ),
         Topic(
             id = 2,
             title = "title2",
-            dateCreated = Calendar.getInstance().apply { timeInMillis = 22341 },
-            dueDate = Calendar.getInstance().apply { timeInMillis = 22342 },
-            lastReviewDate = Calendar.getInstance().apply { timeInMillis = 22343 },
+            dateCreated = getCal(22341),
+            dueDate = getCal(22342),
+            lastReviewDate = getCal(22343),
             lastDuration = 24,
             categoryId = -1
         ),
         Topic(
             id = 3,
             title = "title3",
-            dateCreated = Calendar.getInstance().apply { timeInMillis = 32341 },
-            dueDate = Calendar.getInstance().apply { timeInMillis = 32342 },
-            lastReviewDate = Calendar.getInstance().apply { timeInMillis = 32343 },
+            dateCreated = getCal(32341),
+            dueDate = getCal(32342),
+            lastReviewDate = getCal(32343),
             lastDuration = 34,
             categoryId = -1
         ),
         Topic(
             id = 4,
             title = "title4",
-            dateCreated = Calendar.getInstance().apply { timeInMillis = 42341 },
-            dueDate = Calendar.getInstance().apply { timeInMillis = 42342 },
-            lastReviewDate = Calendar.getInstance().apply { timeInMillis = 42343 },
+            dateCreated = getCal(42341),
+            dueDate = getCal(42342),
+            lastReviewDate = getCal(42343),
             lastDuration = 44,
             categoryId = -1
         ),
         Topic(
             id = 5,
             title = "title5",
-            dateCreated = Calendar.getInstance().apply { timeInMillis = 52341 },
-            dueDate = Calendar.getInstance().apply { timeInMillis = 52342 },
-            lastReviewDate = Calendar.getInstance().apply { timeInMillis = 52343 },
+            dateCreated = getCal(52341),
+            dueDate = getCal(52342),
+            lastReviewDate = getCal(52343),
             lastDuration = 54,
             categoryId = -1
         ),
         Topic(
             id = 6,
             title = "title6",
-            dateCreated = Calendar.getInstance().apply { timeInMillis = 62341 },
-            dueDate = Calendar.getInstance().apply { timeInMillis = 62342 },
-            lastReviewDate = Calendar.getInstance().apply { timeInMillis = 62343 },
+            dateCreated = getCal(62341),
+            dueDate = getCal(62342),
+            lastReviewDate = getCal(62343),
             lastDuration = 64,
             categoryId = -1
         )
     )
 
+    fun getTopic(
+        title: String,
+        dd: Calendar = Calendar.getInstance(),
+        dc: Calendar = Calendar.getInstance(),
+        lrd: Calendar = Calendar.getInstance(),
+        ld: Int = 0,
+        cid: Int = -1
+    ) = Topic(title = title, dateCreated = dc, dueDate = dd, lastReviewDate = lrd, categoryId = cid, lastDuration = ld)
+
+    fun getCal(time: Long): Calendar = Calendar.getInstance().apply { timeInMillis = time }
 }

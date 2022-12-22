@@ -1,19 +1,14 @@
 package com.example.topicreview.utils
 
-import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
+import com.example.topicreview.BaseReviewDatabaseTest
 import com.example.topicreview.DatabaseTestUtil
-import com.example.topicreview.database.ReviewDao
-import com.example.topicreview.database.ReviewDatabase
 import com.example.topicreview.database.Topic
 import com.example.topicreview.utils.DatabaseUtils.exportDataToCSV
 import com.example.topicreview.utils.DatabaseUtils.importDataFromCSV
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import org.junit.After
 import org.junit.Assert.*
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.ByteArrayOutputStream
@@ -21,23 +16,7 @@ import java.nio.charset.StandardCharsets
 import java.util.*
 
 @RunWith(AndroidJUnit4::class)
-class DatabaseUtilsTest {
-
-    private lateinit var reviewDao: ReviewDao
-    private lateinit var reviewDatabase: ReviewDatabase
-
-    @Before
-    fun onCreateDB() {
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
-        reviewDatabase = Room.inMemoryDatabaseBuilder(
-            context, ReviewDatabase::class.java).build()
-        reviewDao = reviewDatabase.reviewDao()
-    }
-
-    @After
-    fun closeDb() {
-        reviewDatabase.close()
-    }
+class DatabaseUtilsTest: BaseReviewDatabaseTest() {
 
     @Test
     fun importDataFromCSVSample1() {
@@ -101,6 +80,7 @@ class DatabaseUtilsTest {
         }
         return data.toString()
     }
+
     private fun getTestImportText2(topics: List<Topic>): String {
         val data = StringBuilder("_id;date_created;title;due_date;last_review_duration;category_id;last_review_date")
         for (topic in topics) {
