@@ -1,9 +1,9 @@
 package com.example.topicreview
 
-import android.app.Application
+import androidx.multidex.MultiDexApplication
 import com.example.topicreview.database.ReviewDatabase
 
-class TopicReviewApplication: Application() {
+class TopicReviewApplication: MultiDexApplication() {
 
     val database: ReviewDatabase by lazy { ReviewDatabase.getDatabase(this) }
 

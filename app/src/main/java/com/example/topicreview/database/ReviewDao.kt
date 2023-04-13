@@ -22,10 +22,10 @@ abstract class ReviewDao {
     abstract fun getTopic(id: Int): Flow<Topic>
 
     @Insert(onConflict = IGNORE)
-    abstract suspend fun insertTopic(topic: Topic)
+    abstract suspend fun insertTopic(topic: Topic): Long
 
     @Insert(onConflict = IGNORE)
-    abstract suspend fun insertTopics(topics: List<Topic>)
+    abstract suspend fun insertTopics(topics: List<Topic>): List<Long>
 
     @Update
     abstract suspend fun updateTopic(topic: Topic)
@@ -34,7 +34,7 @@ abstract class ReviewDao {
     abstract suspend fun deleteTopic(topic: Topic)
 
     @Insert(onConflict = IGNORE)
-    abstract suspend fun insertCategory(category: Category)
+    abstract suspend fun insertCategory(category: Category): Long
 
     @Update
     abstract suspend fun updateCategory(category: Category)
