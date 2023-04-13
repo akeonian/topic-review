@@ -15,6 +15,7 @@ android {
         targetSdk 33
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -68,6 +69,8 @@ dependencies {
 
     // Protocol buffers
     implementation 'com.google.protobuf:protobuf-kotlin:3.21.9'
+    // Multidex
+    implementation "androidx.multidex:multidex:2.0.1"
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
